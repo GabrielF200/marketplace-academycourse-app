@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-
-import ContentstackAppSdk from "@contentstack/app-sdk";
-import localeTexts from "../../common/locales/en-us/index";
 import {
   Field,
   FieldLabel,
   Form,
   TextInput,
 } from "@contentstack/venus-components";
+import { useEffect, useState } from "react";
+
+import ContentstackAppSdk from "@contentstack/app-sdk";
+import localeTexts from "../../common/locales/en-us/index";
 
 const AppConfigurationExtension = () => {
   const [state, setState] = useState<any>({
@@ -39,21 +39,6 @@ const AppConfigurationExtension = () => {
     return target;
   };
 
-  const updateConfig = async (e: any) => {
-    // eslint-disable-next-line prefer-const
-    let { name: fieldName, value: fieldValue } = e?.target || {};
-    if (typeof fieldValue === "string") fieldValue = fieldValue?.trim();
-    const updatedConfig = state?.installationData?.configuration || {};
-    updatedConfig[fieldName] = fieldValue;
-    if (typeof state?.setInstallationData !== "undefined") {
-      await state?.setInstallationData({
-        ...state.installationData,
-        configuration: updatedConfig,
-      });
-    }
-    return true;
-  };
-
   useEffect(() => {
     ContentstackAppSdk.init()
       .then(async (appSdk) => {
@@ -77,6 +62,22 @@ const AppConfigurationExtension = () => {
         console.error("appSdk initialization error", error);
       });
   }, []);
+  const updateConfig = async (e: any) => {
+    // eslint-disable-next-line prefer-const
+    let { name: fieldName, value: fieldValue } = e?.target || {};
+    if (typeof fieldValue === "string") fieldValue = fieldValue?.trim();
+    const updatedConfig = state?.installationData?.configuration || {};
+    updatedConfig[fieldName] = fieldValue;
+
+    if (typeof state?.setInstallationData !== "undefined") {
+      await state?.setInstallationData({
+        ...state.installationData,
+        configuration: updatedConfig,
+      });
+    }
+
+    return true;
+  };
 
   return (
     <div className="app-config">
@@ -84,6 +85,7 @@ const AppConfigurationExtension = () => {
         <Form className="config-wrapper">
           <Field>
             <FieldLabel required htmlFor="title">
+              {" "}
               {localeTexts.ConfigScreen.page.label}
             </FieldLabel>
             <TextInput
